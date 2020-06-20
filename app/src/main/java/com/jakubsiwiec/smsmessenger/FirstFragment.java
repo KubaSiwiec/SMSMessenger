@@ -65,7 +65,12 @@ public class FirstFragment extends Fragment {
                 String phone = editTextPhoneAddContact.getText().toString();
 
                 Log.i(TAG, "Adding " + name + ", " + phone);
-                addContact(name, phone);
+                if (name.matches("") | phone.matches("")){
+                    Toast.makeText(getContext(), "Contact not added, enter name and phone number", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    addContact(name, phone);
+                }
             }
         });
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
