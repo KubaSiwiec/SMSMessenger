@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,11 +19,26 @@ import androidx.navigation.fragment.NavHostFragment;
 
 public class FirstFragment extends Fragment {
 
+    String TAG = "First fragment";
+
     private DataBaseHelper dataBaseHelper;
 
     //IF LIST VIEW IS EMPTY,
     //CREATE SOME FANCY NOTE THAT INFORMS USER THAT
     //THEY HAVE NO CHATS YET
+
+
+    //database insertion
+    public void addContact(String name, String phone){
+
+        boolean insertData = dataBaseHelper.addContact(name, phone);
+        if(insertData){
+            Toast.makeText(getContext(), "Inserted correctly", Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(getContext(), "WROOOOONG! F", Toast.LENGTH_LONG).show();
+
+        }
+    }
 
 
     private AlertDialog addContactDialog(){
@@ -44,7 +61,11 @@ public class FirstFragment extends Fragment {
 
         builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
+                String name = editTextNameAddContact.getText().toString();
+                String phone = editTextPhoneAddContact.getText().toString();
+
+                Log.i(TAG, "Adding " + name + ", " + phone);
+                addContact(name, phone);
             }
         });
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -68,6 +89,10 @@ public class FirstFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Call DBhelper constructor
+        Log.i(TAG, "Calling DBH constructor");
+        dataBaseHelper = new DataBaseHelper(getContext());
 
         view.findViewById(R.id.button_write_message).setOnClickListener(new View.OnClickListener() {
             @Override

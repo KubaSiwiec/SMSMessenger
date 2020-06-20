@@ -20,7 +20,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "messagesMenager";
+    private static final String DATABASE_NAME = "messagesManager";
 
     // Table Names
     private static final String TABLE_CONTACTS = "contacts";
@@ -41,22 +41,26 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     // Create tables
     private static final String CREATE_TABLE_CONTACTS =  "CREATE TABLE " + TABLE_CONTACTS + " (" + KEY_ID_CONTACT
-            + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT " + KEY_PHONE_NUMBER + " TEXT;";
+            + " INTEGER PRIMARY KEY, " + KEY_NAME + " TEXT, " + KEY_PHONE_NUMBER + " TEXT);";
 
     // Create tables
     private static final String CREATE_TABLE_MESSAGES =  "CREATE TABLE " + TABLE_MESSAGES + " (" + KEY_ID_MESSAGE
-            + " INTEGER PRIMARY KEY," + KEY_SENT_PHONE_NUMBER + " TEXT " + KEY_RECEIVED_PHONE_NUMBER + " TEXT " +
-            KEY_DATETIME + " DATETIME " + KEY_SENT + " BIT " + KEY_SEEN + " BIT;";
+            + " INTEGER PRIMARY KEY, " + KEY_SENT_PHONE_NUMBER + " TEXT, " + KEY_RECEIVED_PHONE_NUMBER + " TEXT, " +
+            KEY_DATETIME + " DATETIME, " + KEY_SENT + " BIT, " + KEY_SEEN + " BIT);";
 
     public DataBaseHelper(@Nullable Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        Log.i(TAG, "Constructor being called");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create tables
         db.execSQL(CREATE_TABLE_CONTACTS);
+        Log.i(TAG, "Contacts DB created");
         db.execSQL(CREATE_TABLE_MESSAGES);
+        Log.i(TAG, "Messages DB created");
+
     }
 
     @Override
@@ -64,6 +68,26 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS + ";");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES + ";");
         onCreate(db);
+
+    }
+
+
+    public boolean addContact(String name, String phone){
+        Log.i(TAG, "Adding to Contacts DB");
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(KEY_NAME, name);
+        contentValues.put(KEY_PHONE_NUMBER, phone);
+
+        Log.d(TAG, "add data: adding: "  + name + ", " + phone);
+
+        long result = db.insert(TABLE_CONTACTS, null, contentValues);
+
+        //if something was inserted incorrectly
+        if (result == -1) return false;
+        else return true;
+
 
     }
 
