@@ -1,0 +1,36 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".FirstFragment"
+    android:background="#eeeeee"
+    >
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmation."
+        android:padding="5dp"
+        android:textSize="15dp"
+        />
+    <EditText
+        android:id="@+id/editTextNameAddContact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name."
+        android:textSize="15dp"
+        android:layout_below="@id/dialog_title"
+        />
+    <EditText
+        android:id="@+id/editTextPhoneAddContact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone number."
+        android:textSize="15dp"
+        android:inputType="phone"
+        android:layout_below="@+id/editTextNameAddContact"
+        />
+</RelativeLayout>

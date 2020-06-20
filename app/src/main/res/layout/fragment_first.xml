@@ -21,7 +21,7 @@
         app:rippleColor="#111111" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/buttonContact"
+        android:id="@+id/button_add_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="64dp"
