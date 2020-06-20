@@ -24,5 +24,18 @@
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_SecondFragment_to_contactsFragment"
+            app:destination="@id/contactsFragment"
+            app:popUpTo="@id/SecondFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.jakubsiwiec.smsmessenger.ContactsFragment"
+        android:label="fragment_contacts_list"
+        tools:layout="@layout/fragment_contacts_list" >
+        <action
+            android:id="@+id/action_contactsFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
     </fragment>
 </navigation>

@@ -1,5 +1,6 @@
 package com.jakubsiwiec.smsmessenger;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,8 @@ public class SecondFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         editTextPhoneNumberMsg = (EditText) view.findViewById(R.id.editTextPhoneMsg);
         editTextMessage = (EditText) view.findViewById(R.id.editTextMessage);
@@ -59,6 +62,14 @@ public class SecondFragment extends Fragment {
             public void onClick(View view) {
                 NavHostFragment.findNavController(SecondFragment.this)
                         .navigate(R.id.action_SecondFragment_to_FirstFragment);
+            }
+        });
+
+        view.findViewById(R.id.buttonContact).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(SecondFragment.this)
+                        .navigate(R.id.action_SecondFragment_to_contactsFragment);
             }
         });
     }
