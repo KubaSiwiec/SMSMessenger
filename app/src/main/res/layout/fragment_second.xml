@@ -29,9 +29,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageButton
+            android:id="@+id/buttonContact"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/white"
+            android:src="@drawable/ic_baseline_person_24" />
+
         <EditText
             android:id="@+id/editTextPhoneMsg"
-            android:layout_width="325dp"
+            android:layout_width="249dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Phone number"
@@ -44,6 +52,7 @@
             android:backgroundTint="@android:color/white"
             android:text="Back"
             android:textSize="16sp" />
+
     </LinearLayout>
 
     <EditText
