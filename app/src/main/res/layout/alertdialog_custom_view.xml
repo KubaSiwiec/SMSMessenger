@@ -8,29 +8,21 @@
     tools:context=".FirstFragment"
     android:background="#eeeeee"
     >
-    <TextView
-        android:id="@+id/dialog_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Confirmation."
-        android:padding="5dp"
-        android:textSize="15dp"
-        />
+
     <EditText
-        android:id="@+id/editTextNameAddContact"
+        android:id="@+id/editTextNameContact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name."
         android:textSize="15dp"
-        android:layout_below="@id/dialog_title"
         />
     <EditText
-        android:id="@+id/editTextPhoneAddContact"
+        android:id="@+id/editTextPhoneContact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone number."
         android:textSize="15dp"
         android:inputType="phone"
-        android:layout_below="@+id/editTextNameAddContact"
+        android:layout_below="@+id/editTextNameContact"
         />
 </RelativeLayout>

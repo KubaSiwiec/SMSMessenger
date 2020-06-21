@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -88,11 +89,27 @@ public class ContactsFragment extends Fragment {
 //                + "\nDate:" + displayDate + ",   " + dispStartTime + "-" + dispFinishTime;
 
         AlertDialog.Builder editDeleteContactsDialogBuilder = new AlertDialog.Builder(getActivity());
-        editDeleteContactsDialogBuilder.setTitle(contactName);
+        editDeleteContactsDialogBuilder.setTitle(contactName + " - Edit Contact");
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.alertdialog_custom_view,null);
+
+        // Specify alert dialog is not cancelable/not ignorable
+        editDeleteContactsDialogBuilder.setCancelable(false);
+
+        // Set the custom layout as alert dialog view
+        editDeleteContactsDialogBuilder.setView(dialogView);
+
+        // Get the custom alert dialog view widgets reference
+        final EditText editTextNameEditContact = (EditText) dialogView.findViewById(R.id.editTextNameContact);
+        final EditText editTextPhoneEditContact = (EditText) dialogView.findViewById(R.id.editTextPhoneContact);
 
         editDeleteContactsDialogBuilder.setPositiveButton("EDIT CONTACT", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
+                // User clicked EDIT CONTACT button
+                //Check if contact with new entered name exists
+                //if not, then replace the old name and phone with provided
+                //When dialog shows up, the edit text fields should contain old name and phone
             }
         });
 

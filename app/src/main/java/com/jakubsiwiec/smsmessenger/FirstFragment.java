@@ -58,6 +58,7 @@ public class FirstFragment extends Fragment {
 
         // Build an AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Add Contact");
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alertdialog_custom_view,null);
@@ -69,8 +70,8 @@ public class FirstFragment extends Fragment {
         builder.setView(dialogView);
 
         // Get the custom alert dialog view widgets reference
-        final EditText editTextNameAddContact = (EditText) dialogView.findViewById(R.id.editTextNameAddContact);
-        final EditText editTextPhoneAddContact = (EditText) dialogView.findViewById(R.id.editTextPhoneAddContact);
+        final EditText editTextNameAddContact = (EditText) dialogView.findViewById(R.id.editTextNameContact);
+        final EditText editTextPhoneAddContact = (EditText) dialogView.findViewById(R.id.editTextPhoneContact);
 
         builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

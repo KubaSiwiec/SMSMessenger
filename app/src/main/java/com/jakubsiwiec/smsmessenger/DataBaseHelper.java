@@ -125,7 +125,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     // Delete methods
     public void deleteContact(String contactName){
-
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + TABLE_CONTACTS + " WHERE " + KEY_NAME + " = '" + contactName + "'";
+        db.execSQL(query);
     }
 
 
