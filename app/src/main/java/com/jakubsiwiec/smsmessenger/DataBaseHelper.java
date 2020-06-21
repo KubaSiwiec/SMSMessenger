@@ -72,6 +72,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
+    // Add methods
     public boolean addContact(String name, String phone){
         Log.i(TAG, "Adding to Contacts DB");
         SQLiteDatabase db = this.getWritableDatabase();
@@ -89,6 +90,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         else return true;
 
 
+    }
+
+
+
+
+    // Get methods
+    public Cursor getContacts(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_CONTACTS;
+        Cursor data = db.rawQuery(query, null);
+        return data;
     }
 
 
