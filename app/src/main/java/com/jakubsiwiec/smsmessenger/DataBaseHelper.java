@@ -33,7 +33,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     // Messages table keys
     private static final String KEY_ID_MESSAGE= "ID_message";
-    private static final String KEY_SENT_PHONE_NUMBER = "received_phone_number";
+    private static final String KEY_SENT_PHONE_NUMBER = "sent_phone_number";
     private static final String KEY_RECEIVED_PHONE_NUMBER = "received_phone_number";
     private static final String KEY_DATETIME = "datetime";
     private static final String KEY_SENT = "sent";  // idk if necessary

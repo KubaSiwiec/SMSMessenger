@@ -1,7 +1,13 @@
 package com.jakubsiwiec.smsmessenger;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +16,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -26,6 +34,14 @@ public class SecondFragment extends Fragment {
     // Values stored in edit text
     private String message;
     private String phoneNumber = "";
+
+    private int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
+
+    private String SENT = "SMS SENT";
+    private String DELIVERED = "SMS DELIVERED";
+    private PendingIntent sentPI, deliveredPI;
+    private BroadcastReceiver smsSentReceiver, smsDeliveredReceiver;
+
 
     @Override
     public View onCreateView(
@@ -56,6 +72,9 @@ public class SecondFragment extends Fragment {
 
         editTextMessage = (EditText) view.findViewById(R.id.editTextMessage);
 
+        sentPI = PendingIntent.getBroadcast(getContext(), 0, new Intent(SENT), 0);
+        deliveredPI = PendingIntent.getBroadcast(getContext(), 0, new Intent(DELIVERED), 0)
+
 
         view.findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +89,21 @@ public class SecondFragment extends Fragment {
                 if (!phoneNumber.matches("")){
                     message = editTextMessage.getText().toString();
 
+                    // Request permissions if they are not granted
+                    if (ContextCompat.checkSelfPermission(getContext(),
+                            Manifest.permission.SEND_SMS)
+                            != PackageManager.PERMISSION_GRANTED){
+
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.SEND_SMS},
+                                MY_PERMISSIONS_REQUEST_SEND_SMS);
+                    }
+
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+
+
+
                     Log.i(TAG, "Phone number: " + phoneNumber + "\nMessage: " + message);
                     editTextMessage.getText().clear();
                 }
@@ -80,6 +114,7 @@ public class SecondFragment extends Fragment {
         });
 
 
+
         view.findViewById(R.id.buttonContact).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,4 +123,7 @@ public class SecondFragment extends Fragment {
             }
         });
     }
+
+
+
 }
