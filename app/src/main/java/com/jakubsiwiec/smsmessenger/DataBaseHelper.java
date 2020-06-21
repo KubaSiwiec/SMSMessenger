@@ -116,8 +116,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public Cursor getContacts(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_CONTACTS + " WHERE " + KEY_NAME + " = '" + name + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
     // Edit methods
-    public void EditContact(String contactName){
+    public void EditContact(String contactName, String newName, String newPhone){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_NAME, newName); //These Fields should be your String values of actual column names
+        cv.put(KEY_PHONE_NUMBER, newPhone);
+
+        String filter = KEY_NAME + " = '" + contactName + "'";
+
+        db.update(TABLE_CONTACTS, cv, filter, null);
 
     }
 

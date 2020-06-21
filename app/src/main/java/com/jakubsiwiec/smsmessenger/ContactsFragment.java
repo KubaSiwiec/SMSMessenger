@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -62,32 +63,26 @@ public class ContactsFragment extends Fragment {
 
     }
 
+//    private void editCcntact(String name){
+//
+//
+//
+//    }
 
-    private AlertDialog deleteDialog(Object o){
+
+    private AlertDialog deleteEditDialog(Object o){
+
+        Log.d(TAG, "Contact being edited");
 
         final String contactName = o.toString();
 
-//        Log.d("Event position", String.valueOf(eventPosition));
-//        final Cursor data = dataBaseHelper.getContacts();
-//
-//        data.moveToPosition(eventPosition);
-//
-//        String eventTitle = data.getString(2);
-//
-//        //represent date in readable format
-//        String fullDate = data.getString(6);
-//        String displayDate = fullDate.substring(0, 10) + " " + fullDate.substring(fullDate.length() - 4);
-//
-//        //trim seconds
-//        String fullStartTime = data.getString(7);
-//        String fullFinishTime = data.getString(8);
-//
-//        String dispStartTime = fullStartTime.substring(0, 5);
-//        String dispFinishTime = fullFinishTime.substring(0, 5);
-//
-//        String eventInfo = data.getString(2) + "\n\nLocation: " + data.getString(3)
-//                + "\nDate:" + displayDate + ",   " + dispStartTime + "-" + dispFinishTime;
 
+        //Access phone number
+        Cursor contactRow = dataBaseHelper.getContacts(contactName);
+        contactRow.moveToNext();
+        String oldContactPhoneNumber = contactRow.getString(2);
+
+        //Create dialog
         AlertDialog.Builder editDeleteContactsDialogBuilder = new AlertDialog.Builder(getActivity());
         editDeleteContactsDialogBuilder.setTitle(contactName + " - Edit Contact");
 
@@ -104,12 +99,30 @@ public class ContactsFragment extends Fragment {
         final EditText editTextNameEditContact = (EditText) dialogView.findViewById(R.id.editTextNameContact);
         final EditText editTextPhoneEditContact = (EditText) dialogView.findViewById(R.id.editTextPhoneContact);
 
+        editTextNameEditContact.setText(contactName);
+        editTextPhoneEditContact.setText(oldContactPhoneNumber);
+
         editDeleteContactsDialogBuilder.setPositiveButton("EDIT CONTACT", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked EDIT CONTACT button
                 //Check if contact with new entered name exists
                 //if not, then replace the old name and phone with provided
                 //When dialog shows up, the edit text fields should contain old name and phone
+
+                String newName = editTextNameEditContact.getText().toString();
+                String newContactPhoneNumber = editTextPhoneEditContact.getText().toString();
+
+                // CHeck if the newly selected name isn't occupied
+                if (dataBaseHelper.checkIfContactExists(newName)){
+                    Toast.makeText(getContext(), "Contact already exists", Toast.LENGTH_LONG);
+                }
+                // Update DB if not, and populate list view to show changes immediately
+                else{
+                    dataBaseHelper.EditContact(contactName, newName, newContactPhoneNumber);
+                    populateListView();
+                }
+
+
             }
         });
 
@@ -162,7 +175,7 @@ public class ContactsFragment extends Fragment {
 
                 Log.i(TAG, "Item of position " + position + " and l " + l + " held");
 
-                AlertDialog deleteDialog = deleteDialog(o);
+                AlertDialog deleteDialog = deleteEditDialog(o);
                 deleteDialog.show();
                 return true;
             }

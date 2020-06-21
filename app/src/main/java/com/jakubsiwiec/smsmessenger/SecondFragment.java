@@ -49,6 +49,12 @@ public class SecondFragment extends Fragment {
         view.findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
+                This function sends SMS message
+                At first it is checked, if phone number is entered
+                Then the message is sent, and the results are written to DB
+                 */
+
                 phoneNumber = editTextPhoneNumberMsg.getText().toString();
                 if (!phoneNumber.matches("")){
                     message = editTextMessage.getText().toString();
