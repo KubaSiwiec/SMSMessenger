@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -37,11 +38,6 @@ public class SecondFragment extends Fragment {
 
     private int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
 
-    private String SENT = "SMS SENT";
-    private String DELIVERED = "SMS DELIVERED";
-    private PendingIntent sentPI, deliveredPI;
-    private BroadcastReceiver smsSentReceiver, smsDeliveredReceiver;
-
 
     @Override
     public View onCreateView(
@@ -72,9 +68,6 @@ public class SecondFragment extends Fragment {
 
         editTextMessage = (EditText) view.findViewById(R.id.editTextMessage);
 
-        sentPI = PendingIntent.getBroadcast(getContext(), 0, new Intent(SENT), 0);
-        deliveredPI = PendingIntent.getBroadcast(getContext(), 0, new Intent(DELIVERED), 0)
-
 
         view.findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +93,7 @@ public class SecondFragment extends Fragment {
                     }
 
                     SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+                    smsManager.sendTextMessage(phoneNumber, null, message, ((MainActivity) getActivity()).sentPI, ((MainActivity) getActivity()).deliveredPI);
 
 
 
@@ -123,7 +116,6 @@ public class SecondFragment extends Fragment {
             }
         });
     }
-
 
 
 }
