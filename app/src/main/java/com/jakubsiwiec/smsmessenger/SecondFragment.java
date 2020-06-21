@@ -25,13 +25,22 @@ public class SecondFragment extends Fragment {
 
     // Values stored in edit text
     private String message;
-    private String phoneNumber;
+    private String phoneNumber = "";
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
+        // Receive phone number from contact list
+        // If it has been chosen before
+        Bundle args = getArguments();
+
+        if (args != null){
+            phoneNumber = args.getString("contactPhoneNumber");
+            Log.i(TAG, "Received phone number from contact list: " + phoneNumber);
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_second, container, false);
     }
@@ -43,6 +52,8 @@ public class SecondFragment extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         editTextPhoneNumberMsg = (EditText) view.findViewById(R.id.editTextPhoneMsg);
+        editTextPhoneNumberMsg.setText(phoneNumber);
+
         editTextMessage = (EditText) view.findViewById(R.id.editTextMessage);
 
 

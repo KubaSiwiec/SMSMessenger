@@ -1,12 +1,14 @@
 package com.jakubsiwiec.smsmessenger;
 
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 public class ContactsFragment extends Fragment {
 
     private static final String TAG = "ListDataFragment";
+    public static final String cpn = "";
     private DataBaseHelper dataBaseHelper;
     private ListView listViewContacts;
 
@@ -160,7 +163,6 @@ public class ContactsFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final Bundle bundle = new Bundle();
 
         listViewContacts = (ListView) view.findViewById(R.id.listViewContacts);
         dataBaseHelper = new DataBaseHelper(getContext());
@@ -189,7 +191,18 @@ public class ContactsFragment extends Fragment {
 
                 Object o = listViewContacts.getItemAtPosition(position);
 
-                bundle.putString("contactName", o.toString());
+                Bundle bundle = new Bundle();
+
+                Cursor contactRow = dataBaseHelper.getContacts(o.toString());
+                contactRow.moveToNext();
+                String contactPhoneNumber = contactRow.getString(2);
+
+                bundle.putString("contactPhoneNumber", contactPhoneNumber);
+
+                NavHostFragment.findNavController(ContactsFragment.this)
+                        .navigate(R.id.action_contactsFragment_to_SecondFragment, bundle);
+
+
 
                 Log.i(TAG, "Item of position " + position + " clicked");
 
