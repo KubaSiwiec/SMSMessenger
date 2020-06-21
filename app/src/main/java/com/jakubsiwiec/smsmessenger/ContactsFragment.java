@@ -33,6 +33,9 @@ public class ContactsFragment extends Fragment {
         Log.d(TAG, "Populate list view: displaying data in the ListView");
         Cursor data = dataBaseHelper.getContacts();
         ArrayList<String> listData = new ArrayList<>();
+        ArrayList<String>  maintitle = new ArrayList<>();
+        ArrayList<String>  subtitle = new ArrayList<>();
+        ArrayList<Integer>  imgid= new ArrayList<>();
         int i = 1;
         while(data.moveToNext()){
 
@@ -40,14 +43,17 @@ public class ContactsFragment extends Fragment {
             String contactName = data.getString(1);
             String contactPhoneNumber = data.getString(2);
 
-            listData.add(contactName + "\n" + contactPhoneNumber);
+            maintitle.add(contactName);
+            subtitle.add(contactPhoneNumber);
+            imgid.add(R.drawable.ic_baseline_account_circle_24);
+
             Log.d(TAG, data.getString(1));
             i++;
         }
 
         Log.d(TAG, String.valueOf(data.getCount()));
 
-        ListAdapter adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listData);
+        CustomContactListAdapter adapter=new CustomContactListAdapter(getContext(), maintitle, subtitle,imgid);
         listViewContacts.setAdapter(adapter);
 
     }
