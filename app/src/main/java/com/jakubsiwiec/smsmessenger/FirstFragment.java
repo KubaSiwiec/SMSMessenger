@@ -30,18 +30,31 @@ public class FirstFragment extends Fragment {
 
     //database insertion
     public void addContact(String name, String phone){
-
-        boolean insertData = dataBaseHelper.addContact(name, phone);
-        if(insertData){
-            Toast.makeText(getContext(), "Inserted correctly", Toast.LENGTH_LONG).show();
-        }else {
-            Toast.makeText(getContext(), "WROOOOONG! F", Toast.LENGTH_LONG).show();
-
+        /*
+        Check if contact with the entered name exists
+        If not, add it to database
+        If it existed before, inform the user
+         */
+        if(dataBaseHelper.checkIfContactExists(name)){
+            Toast.makeText(getContext(), "Contact already exists", Toast.LENGTH_LONG).show();
+        }
+        else{
+            boolean insertData = dataBaseHelper.addContact(name, phone);
+            if(insertData){
+                Toast.makeText(getContext(), "Inserted correctly", Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(getContext(), "WROOOOONG! F", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
 
     private AlertDialog addContactDialog(){
+        /*
+        Show dialog which provides the interface of contact addition
+        Dialog is customized - it consists of two text fields - name and phone number
+        And two buttons - Add contact and cancel
+         */
 
         // Build an AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -95,6 +108,7 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Back button
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 

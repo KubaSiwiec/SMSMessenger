@@ -71,6 +71,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     }
 
+    // Check if contact exists
+    public boolean checkIfContactExists(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT 1 FROM " + TABLE_CONTACTS + " WHERE " + KEY_NAME + " ='" + name + "';";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
 
     // Add methods
     public boolean addContact(String name, String phone){
