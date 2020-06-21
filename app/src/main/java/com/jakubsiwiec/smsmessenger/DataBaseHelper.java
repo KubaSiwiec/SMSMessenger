@@ -103,5 +103,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    // Edit methods
+    public void EditContact(String contactName){
+
+    }
+
+
+
+    // Delete methods
+    public void deleteContact(String contactName){
+
+    }
+
+
 
 }
