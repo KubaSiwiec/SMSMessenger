@@ -45,13 +45,13 @@ public class SecondFragment extends Fragment {
 
     //database insertion
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addSentMessage(Context context, String phoneSender, String content){
+    public void addSentMessage(String phoneReceiver, String content){
         /*
         Save the message to the database
          */
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        Toast.makeText(context, "\nsent from: " + phoneSender + "\nContent: " + content, Toast.LENGTH_LONG).show();
-        boolean insertData = dataBaseHelper.addMessage(phoneSender, content, timestamp, true);
+        Toast.makeText(getContext(), "\nsent from: " + phoneReceiver + "\nContent: " + content, Toast.LENGTH_LONG).show();
+        boolean insertData = dataBaseHelper.addMessage(phoneReceiver, content, timestamp, true);
     }
 
 
@@ -78,6 +78,8 @@ public class SecondFragment extends Fragment {
 
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        dataBaseHelper = new DataBaseHelper(getContext());
 
         editTextPhoneNumberMsg = (EditText) view.findViewById(R.id.editTextPhoneMsg);
         editTextPhoneNumberMsg.setText(phoneNumber);
@@ -112,7 +114,7 @@ public class SecondFragment extends Fragment {
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(phoneNumber, null, message, ((MainActivity) getActivity()).sentPI, ((MainActivity) getActivity()).deliveredPI);
 
-                    addSentMessage(getActivity(), phoneNumber, message);
+                    addSentMessage(phoneNumber, message);
 
                     Log.i(TAG, "Phone number: " + phoneNumber + "\nMessage: " + message);
                     editTextMessage.getText().clear();

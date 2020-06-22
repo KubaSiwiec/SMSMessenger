@@ -37,8 +37,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
-    public static String myPhoneNumber;
     private String SENT = "SMS SENT";
     private String DELIVERED = "SMS DELIVERED";
     private String RECEIVED = "SMS RECEIVED";

@@ -114,13 +114,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
     public boolean addMessage(String senderNumber, String content, Timestamp dateTime, boolean isSent){
-        String receiverNumber = MainActivity.myPhoneNumber;
 
         Log.i(TAG, "Adding to Messages DB");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(KEY_CONTACT_NUMBER_MESSAGES, senderNumber);
+        contentValues.put(KEY_MESSAGE_CONTENT, content);
         contentValues.put(KEY_SENT, isSent);
         contentValues.put(KEY_DATETIME, String.valueOf(dateTime));
 
