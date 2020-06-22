@@ -1,6 +1,7 @@
 package com.jakubsiwiec.smsmessenger;
 
 import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,11 +11,15 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 public class MySmsReceiver extends BroadcastReceiver {
 
     private static final String TAG =
             MySmsReceiver.class.getSimpleName();
     public static final String pdu_type = "pdus";
+    public static final String CHANNEL_ID = "SMS received notification";
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
@@ -46,11 +51,38 @@ public class MySmsReceiver extends BroadcastReceiver {
                     msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                 }
                 // Build the message to show.
-                strMessage += "SMS from " + msgs[i].getOriginatingAddress();
-                strMessage += " :" + msgs[i].getMessageBody() + "\n";
+                String phone = msgs[i].getOriginatingAddress();
+                String content = msgs[i].getMessageBody();
+
+                strMessage += "SMS from " + phone;
+                strMessage += " :" + content + "\n";
                 // Log and display the SMS message.
                 Log.d(TAG, "onReceive: " + strMessage);
-                Toast.makeText(context, strMessage, Toast.LENGTH_LONG).show();
+
+                // Create an explicit intent for an Activity in your app
+                Intent notifyIntent = new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notifyIntent, 0);
+
+
+                // Create notification for an received message
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_baseline_account_circle_24)
+                        .setContentTitle(phone)
+                        .setContentText(content)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        // Set the intent that will fire when the user taps the notification
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+// notificationId is a unique int for each notification that you must define
+                notificationManager.notify(1, builder.build());
+
+
+
             }
         }
     }
