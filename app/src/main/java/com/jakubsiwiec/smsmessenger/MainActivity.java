@@ -94,36 +94,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_NUMBERS)) {
-                // User denied, do nothing
-            } else {
-                // Request permission
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_SMS, Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
-            }
-        }
-
-        Log.i("Main", "Reuqests checked");
-        TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        try
-        {
-            myPhoneNumber =tMgr.getLine1Number();
-        }
-        catch(NullPointerException ex)
-        {
-        }
-
-        // if phone number isn't aviable, let's use the
-        // unique Subscriber ID, it may serve as well as number
-        if(myPhoneNumber.equals("")){
-            myPhoneNumber = tMgr.getSubscriberId();
-        }
-        Toast.makeText(this, myPhoneNumber, Toast.LENGTH_LONG).show();
-        Log.i("Number", "number: " + myPhoneNumber);
-
         // Create channel to notify the user on SMS received
         createNotificationChannel();
 
@@ -196,34 +166,4 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(smsSentReceiver);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) !=
-                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) !=
-                                PackageManager.PERMISSION_GRANTED) {
-                    return;
-                } else {
-                    TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-                    try
-                    {
-                        myPhoneNumber =tMgr.getLine1Number();
-                    }
-                    catch(NullPointerException ex)
-                    {
-                    }
-
-                    // if phone number isn't aviable, let's use the
-                    // unique Subscriber ID, it may serve as well as number
-                    if(myPhoneNumber.equals("")){
-                        myPhoneNumber = tMgr.getSubscriberId();
-                    }
-                    Log.i("Main", myPhoneNumber);
-                }
-        }
-    }
 }

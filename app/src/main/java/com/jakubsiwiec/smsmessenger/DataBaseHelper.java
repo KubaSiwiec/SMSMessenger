@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -33,12 +34,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String KEY_PHONE_NUMBER = "phone_number";
 
     // Messages table keys
+    // Would use KEY_SENT_PHONE_NUMBER and KEY_RECEIVED_PHONE_NUMBER
+    // but it that case it wouldn't be as basic to join with contacts table on one field CONTACT_NUMBER
+    // So KEY_CONTACT_NUMBER and KEY_SENT (which is boolean) will be used
+    // The joining will always occur on KEY_CONTACT_NUMBER
     private static final String KEY_ID_MESSAGE= "ID_message";
-    private static final String KEY_SENT_PHONE_NUMBER = "sent_phone_number";
-    private static final String KEY_RECEIVED_PHONE_NUMBER = "received_phone_number";
+    private static final String KEY_CONTACT_NUMBER_MESSAGES = "phone_number";
+    private static final String KEY_MESSAGE_CONTENT = "content";
+
+//    private static final String KEY_SENT_PHONE_NUMBER = "sent_phone_number";
+//    private static final String KEY_RECEIVED_PHONE_NUMBER = "received_phone_number";
     private static final String KEY_DATETIME = "datetime";
-//    private static final String KEY_SENT = "sent";  // idk if necessary // BIT
-//    private static final String KEY_SEEN = "seen";  // also maybe remove it later // BIT
+    private static final String KEY_SENT = "sent";  // 1 for sent message, 0 for received
 
     // Create tables
     private static final String CREATE_TABLE_CONTACTS =  "CREATE TABLE " + TABLE_CONTACTS + " (" + KEY_ID_CONTACT
@@ -46,7 +53,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     // Create tables
     private static final String CREATE_TABLE_MESSAGES =  "CREATE TABLE " + TABLE_MESSAGES + " (" + KEY_ID_MESSAGE
-            + " INTEGER PRIMARY KEY, " + KEY_SENT_PHONE_NUMBER + " TEXT, " + KEY_RECEIVED_PHONE_NUMBER + " TEXT, " +
+            + " INTEGER PRIMARY KEY, " + KEY_CONTACT_NUMBER_MESSAGES + " TEXT, " + KEY_MESSAGE_CONTENT + " TEXT, " + KEY_SENT + " BIT, " +
             KEY_DATETIME + " DATETIME);";
 
     public DataBaseHelper(@Nullable Context context) {
@@ -104,27 +111,27 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         else return true;
     }
 
-    public boolean addContact(String SenderNumber, String receiverNUmber, LocalDateTime dateTime) {
-        return false;
-    }
 
 
-    public boolean addMessage(String senderNumber, LocalDateTime dateTime){
+    public boolean addMessage(String senderNumber, String content, Timestamp dateTime, boolean isSent){
         String receiverNumber = MainActivity.myPhoneNumber;
 
         Log.i(TAG, "Adding to Messages DB");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(KEY_SENT_PHONE_NUMBER, senderNumber);
-        contentValues.put(KEY_RECEIVED_PHONE_NUMBER, receiverNumber);
+        contentValues.put(KEY_CONTACT_NUMBER_MESSAGES, senderNumber);
+        contentValues.put(KEY_SENT, isSent);
         contentValues.put(KEY_DATETIME, String.valueOf(dateTime));
 
         Log.i(TAG, "Message saved to DB");
         long result = db.insert(TABLE_MESSAGES, null, contentValues);
 
         //if something was inserted incorrectly
-        if (result == -1) return false;
+        if (result == -1) {
+            Log.i(TAG, "Something went wrong during message saving");
+            return false;
+        }
         else return true;
     }
 
@@ -142,6 +149,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public Cursor getContacts(String name){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_CONTACTS + " WHERE " + KEY_NAME + " = '" + name + "'";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
+    public Cursor getLastMessageForEachContact(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_MESSAGES +
+                " WHERE " + KEY_ID_MESSAGE + " IN " +
+                " (SELECT MAX(" + KEY_ID_MESSAGE + ") FROM " + TABLE_MESSAGES +
+                " GROUP BY " + KEY_CONTACT_NUMBER_MESSAGES + ");";
         Cursor data = db.rawQuery(query, null);
         return data;
     }
@@ -169,6 +187,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
+
+    // Emergency drops
+    public void DROOOOOP_THE_BEAT(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE " + TABLE_MESSAGES);
+    }
 
 
 }

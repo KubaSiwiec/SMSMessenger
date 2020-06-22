@@ -15,6 +15,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import androidx.annotation.RequiresApi;
@@ -43,11 +44,8 @@ public class MySmsReceiver extends BroadcastReceiver {
         /*
         Save the message to the database
          */
-
-        Toast.makeText(context, "\nsent from: " + phoneSender + "\nContent: " + content, Toast.LENGTH_LONG).show();
-
-        boolean insertData = dataBaseHelper.addMessage(phoneSender, LocalDateTime.now());
-
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        boolean insertData = dataBaseHelper.addMessage(phoneSender, content, timestamp, false);
     }
 
 

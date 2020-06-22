@@ -40,7 +40,6 @@ public class ContactsFragment extends Fragment {
 
         Log.d(TAG, "Populate list view: displaying data in the ListView");
         Cursor data = dataBaseHelper.getContacts();
-        ArrayList<String> listData = new ArrayList<>();
         ArrayList<String>  maintitle = new ArrayList<>();
         ArrayList<String>  subtitle = new ArrayList<>();
         ArrayList<Integer>  imgid= new ArrayList<>();

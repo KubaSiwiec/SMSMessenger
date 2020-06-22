@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -21,9 +23,42 @@ import androidx.navigation.fragment.NavHostFragment;
 public class FirstFragment extends Fragment {
 
     String TAG = "First fragment";
-    ListView
-
     private DataBaseHelper dataBaseHelper;
+
+    private ListView listViewChats;
+
+
+    private void populateListView(){
+
+        Log.d(TAG, "Populate list view: displaying data in the ListView");
+        Cursor data = dataBaseHelper.getLastMessageForEachContact();
+        ArrayList<String> maintitle = new ArrayList<>();
+        ArrayList<String>  subtitle = new ArrayList<>();
+        ArrayList<Integer>  imgid= new ArrayList<>();
+        int i = 1;
+        while(data.moveToNext()){
+
+            // Get name and phone number
+//            String contactName = data.getString(1);
+            String contactPhone = data.getString(1);    // Placeholder it is
+            String lastMessage = data.getString(2);
+            boolean sent = data.getInt(3) > 0;
+            String dateTime = data.getString(4);
+
+            maintitle.add(contactPhone);
+            subtitle.add(lastMessage + "\nSent: " + sent + "\nDateTime: " + dateTime);
+            imgid.add(R.drawable.ic_baseline_account_circle_24);
+
+            Log.d(TAG, data.getString(1));
+            i++;
+        }
+
+        Log.d(TAG, String.valueOf(data.getCount()));
+
+        CustomContactListAdapter adapter=new CustomContactListAdapter(getContext(), maintitle, subtitle,imgid);
+        listViewChats.setAdapter(adapter);
+
+    }
 
     //IF LIST VIEW IS EMPTY,
     //CREATE SOME FANCY NOTE THAT INFORMS USER THAT
@@ -118,6 +153,11 @@ public class FirstFragment extends Fragment {
         //Call DBhelper constructor
         Log.i(TAG, "Calling DBH constructor");
         dataBaseHelper = new DataBaseHelper(getContext());
+        listViewChats = (ListView) view.findViewById(R.id.listViewChatss);
+
+        // Prepare some security checking if table MESSAGES exists
+        populateListView();
+
 
         view.findViewById(R.id.button_write_message).setOnClickListener(new View.OnClickListener() {
             @Override

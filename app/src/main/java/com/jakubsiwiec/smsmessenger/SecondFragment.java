@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -16,7 +17,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.sql.Timestamp;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -37,6 +41,18 @@ public class SecondFragment extends Fragment {
     private String phoneNumber = "";
 
     private int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
+
+
+    //database insertion
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addSentMessage(Context context, String phoneSender, String content){
+        /*
+        Save the message to the database
+         */
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Toast.makeText(context, "\nsent from: " + phoneSender + "\nContent: " + content, Toast.LENGTH_LONG).show();
+        boolean insertData = dataBaseHelper.addMessage(phoneSender, content, timestamp, true);
+    }
 
 
     @Override
@@ -70,6 +86,7 @@ public class SecondFragment extends Fragment {
 
 
         view.findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 /*
@@ -95,7 +112,7 @@ public class SecondFragment extends Fragment {
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(phoneNumber, null, message, ((MainActivity) getActivity()).sentPI, ((MainActivity) getActivity()).deliveredPI);
 
-
+                    addSentMessage(getActivity(), phoneNumber, message);
 
                     Log.i(TAG, "Phone number: " + phoneNumber + "\nMessage: " + message);
                     editTextMessage.getText().clear();
