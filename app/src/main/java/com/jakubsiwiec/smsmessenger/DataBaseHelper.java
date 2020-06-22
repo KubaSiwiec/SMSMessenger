@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import androidx.annotation.Nullable;
@@ -36,8 +37,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String KEY_SENT_PHONE_NUMBER = "sent_phone_number";
     private static final String KEY_RECEIVED_PHONE_NUMBER = "received_phone_number";
     private static final String KEY_DATETIME = "datetime";
-    private static final String KEY_SENT = "sent";  // idk if necessary
-    private static final String KEY_SEEN = "seen";  // also maybe remove it later
+//    private static final String KEY_SENT = "sent";  // idk if necessary // BIT
+//    private static final String KEY_SEEN = "seen";  // also maybe remove it later // BIT
 
     // Create tables
     private static final String CREATE_TABLE_CONTACTS =  "CREATE TABLE " + TABLE_CONTACTS + " (" + KEY_ID_CONTACT
@@ -46,7 +47,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // Create tables
     private static final String CREATE_TABLE_MESSAGES =  "CREATE TABLE " + TABLE_MESSAGES + " (" + KEY_ID_MESSAGE
             + " INTEGER PRIMARY KEY, " + KEY_SENT_PHONE_NUMBER + " TEXT, " + KEY_RECEIVED_PHONE_NUMBER + " TEXT, " +
-            KEY_DATETIME + " DATETIME, " + KEY_SENT + " BIT, " + KEY_SEEN + " BIT);";
+            KEY_DATETIME + " DATETIME);";
 
     public DataBaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -101,8 +102,30 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //if something was inserted incorrectly
         if (result == -1) return false;
         else return true;
+    }
+
+    public boolean addContact(String SenderNumber, String receiverNUmber, LocalDateTime dateTime) {
+        return false;
+    }
 
 
+    public boolean addMessage(String senderNumber, LocalDateTime dateTime){
+        String receiverNumber = MainActivity.myPhoneNumber;
+
+        Log.i(TAG, "Adding to Messages DB");
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(KEY_SENT_PHONE_NUMBER, senderNumber);
+        contentValues.put(KEY_RECEIVED_PHONE_NUMBER, receiverNumber);
+        contentValues.put(KEY_DATETIME, String.valueOf(dateTime));
+
+        Log.i(TAG, "Message saved to DB");
+        long result = db.insert(TABLE_MESSAGES, null, contentValues);
+
+        //if something was inserted incorrectly
+        if (result == -1) return false;
+        else return true;
     }
 
 

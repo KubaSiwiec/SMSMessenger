@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 
@@ -20,6 +21,7 @@ import androidx.navigation.fragment.NavHostFragment;
 public class FirstFragment extends Fragment {
 
     String TAG = "First fragment";
+    ListView
 
     private DataBaseHelper dataBaseHelper;
 

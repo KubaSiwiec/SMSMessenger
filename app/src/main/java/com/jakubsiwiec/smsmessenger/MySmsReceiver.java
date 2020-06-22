@@ -1,29 +1,61 @@
 package com.jakubsiwiec.smsmessenger;
 
+import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.time.LocalDateTime;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 public class MySmsReceiver extends BroadcastReceiver {
+
+    private DataBaseHelper dataBaseHelper;
 
     private static final String TAG =
             MySmsReceiver.class.getSimpleName();
     public static final String pdu_type = "pdus";
     public static final String CHANNEL_ID = "SMS received notification";
 
-    @TargetApi(Build.VERSION_CODES.M)
+    public String myPhoneNumber;
+
+
+
+
+    //database insertion
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addReceivedMessage(Context context, String phoneSender, String content){
+        /*
+        Save the message to the database
+         */
+
+        Toast.makeText(context, "\nsent from: " + phoneSender + "\nContent: " + content, Toast.LENGTH_LONG).show();
+
+        boolean insertData = dataBaseHelper.addMessage(phoneSender, LocalDateTime.now());
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        dataBaseHelper = new DataBaseHelper(context);
 
         Log.i(TAG, "On receive method started");
 
@@ -64,6 +96,7 @@ public class MySmsReceiver extends BroadcastReceiver {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notifyIntent, 0);
 
+                addReceivedMessage(context, phone, content);
 
                 // Create notification for an received message
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -80,6 +113,9 @@ public class MySmsReceiver extends BroadcastReceiver {
 
 // notificationId is a unique int for each notification that you must define
                 notificationManager.notify(1, builder.build());
+
+
+
 
 
 

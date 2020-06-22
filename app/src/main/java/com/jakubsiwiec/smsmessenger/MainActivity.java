@@ -16,6 +16,8 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -26,6 +28,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.service.media.MediaBrowserService;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 
@@ -35,13 +38,16 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static String myPhoneNumber;
     private String SENT = "SMS SENT";
     private String DELIVERED = "SMS DELIVERED";
     private String RECEIVED = "SMS RECEIVED";
-    public  PendingIntent sentPI, deliveredPI, receivedPI;
+    public PendingIntent sentPI, deliveredPI, receivedPI;
     private BroadcastReceiver smsSentReceiver;
 
     private static final int MY_PERMISSION_REQUEST_RECEIVE_SMS = 0;
+    private static final int PERMISSION_REQUEST_CODE = 100;
+//    public String myPhoneNumber;
 
 
     private void createNotificationChannel() {
@@ -60,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
@@ -78,15 +83,48 @@ public class MainActivity extends AppCompatActivity {
         deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
         receivedPI = PendingIntent.getBroadcast(this, 0, new Intent(RECEIVED), 0);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED){
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)){
+
+        // Request permisions for receiving SMS
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)) {
                 // User denied, do nothing
-            }
-            else{
+            } else {
                 // Request permission
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, MY_PERMISSION_REQUEST_RECEIVE_SMS);
             }
         }
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_NUMBERS)) {
+                // User denied, do nothing
+            } else {
+                // Request permission
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.READ_SMS, Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
+            }
+        }
+
+        Log.i("Main", "Reuqests checked");
+        TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        try
+        {
+            myPhoneNumber =tMgr.getLine1Number();
+        }
+        catch(NullPointerException ex)
+        {
+        }
+
+        // if phone number isn't aviable, let's use the
+        // unique Subscriber ID, it may serve as well as number
+        if(myPhoneNumber.equals("")){
+            myPhoneNumber = tMgr.getSubscriberId();
+        }
+        Toast.makeText(this, myPhoneNumber, Toast.LENGTH_LONG).show();
+        Log.i("Number", "number: " + myPhoneNumber);
+
+        // Create channel to notify the user on SMS received
         createNotificationChannel();
 
     }
@@ -116,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
 
         smsSentReceiver = new BroadcastReceiver() {
             @Override
@@ -155,5 +194,36 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         unregisterReceiver(smsSentReceiver);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) !=
+                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) !=
+                                PackageManager.PERMISSION_GRANTED) {
+                    return;
+                } else {
+                    TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+                    try
+                    {
+                        myPhoneNumber =tMgr.getLine1Number();
+                    }
+                    catch(NullPointerException ex)
+                    {
+                    }
+
+                    // if phone number isn't aviable, let's use the
+                    // unique Subscriber ID, it may serve as well as number
+                    if(myPhoneNumber.equals("")){
+                        myPhoneNumber = tMgr.getSubscriberId();
+                    }
+                    Log.i("Main", myPhoneNumber);
+                }
+        }
     }
 }
