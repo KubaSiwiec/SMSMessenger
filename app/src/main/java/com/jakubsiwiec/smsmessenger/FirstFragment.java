@@ -167,10 +167,6 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Back button
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         //Call DBhelper constructor
         Log.i(TAG, "Calling DBH constructor");
         dataBaseHelper = new DataBaseHelper(getContext());

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
@@ -60,6 +61,7 @@ public class SecondFragment extends Fragment {
         Cursor data = dataBaseHelper.getContactMessages(phoneNumber);
         ArrayList<String> maintitle = new ArrayList<>();
         ArrayList<String>  subtitle = new ArrayList<>();
+        ArrayList<Integer>  isSent = new ArrayList<>();
         String title;
         String messageToShow;
         int i = 1;
@@ -74,9 +76,11 @@ public class SecondFragment extends Fragment {
 
             // Show if message was sent or received
             if (data.getInt(3) > 0){
+                isSent.add(1);
                 title = "Sent: ";
             }
             else{
+                isSent.add(0);
                 title = "Received: ";
             }
 
@@ -100,8 +104,9 @@ public class SecondFragment extends Fragment {
 
         Log.d(TAG, String.valueOf(data.getCount()));
 
-        CustomMessagesListAdapter adapter = new CustomMessagesListAdapter(getContext(), maintitle, subtitle);
+        CustomMessagesListAdapter adapter = new CustomMessagesListAdapter(getContext(), maintitle, subtitle, isSent);
         listViewMessages.setAdapter(adapter);
+        listViewMessages.setSelection(i - 1);
 
     }
 
@@ -132,6 +137,17 @@ public class SecondFragment extends Fragment {
             Log.i(TAG, "Received phone number from contact list: " + phoneNumber);
         }
 
+        // The callback which serves to navigate to first fragment on back button pressed.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                NavHostFragment.findNavController(SecondFragment.this)
+                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_second, container, false);
     }
@@ -139,8 +155,6 @@ public class SecondFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         dataBaseHelper = new DataBaseHelper(getContext());
 
@@ -185,6 +199,8 @@ public class SecondFragment extends Fragment {
 
                         Log.i(TAG, "Phone number: " + phoneNumber + "\nMessage: " + message);
                         editTextMessage.getText().clear();
+
+                        populateListView(phoneNumber);
                     }
                 }
                 else {

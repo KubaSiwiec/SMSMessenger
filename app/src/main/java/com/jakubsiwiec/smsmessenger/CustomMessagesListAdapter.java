@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class CustomMessagesListAdapter extends ArrayAdapter<String> {
         this.context= (Activity) context;
         this.maintitle= maintitle.toArray(new String[0]);
         this.subtitle= subtitle.toArray(new String[0]);
-        this.isSent= subtitle.toArray(new Integer[0]);
+        this.isSent= isSent.toArray(new Integer[0]);
 
     }
 
@@ -36,6 +37,7 @@ public class CustomMessagesListAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.custom_messages_list, null,true);
 
+        LinearLayout messageLayout = (LinearLayout) rowView.findViewById(R.id.messageLayout);
         TextView titleText = (TextView) rowView.findViewById(R.id.title);
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
@@ -47,19 +49,12 @@ public class CustomMessagesListAdapter extends ArrayAdapter<String> {
         // sent messages are positioned to right
         // received ones to left
         if(isSent[position] == 0){
-            titleText.setGravity(Gravity.LEFT);
-            titleText.setPadding(0,0,40,0);
-
-            subtitleText.setGravity(Gravity.LEFT);
-            subtitleText.setPadding(0,0,40,0);
+            messageLayout.setGravity(Gravity.LEFT);
+            messageLayout.setPadding(10, 5, 40, 5);
         }
         else{
-            titleText.setGravity(Gravity.RIGHT);
-            titleText.setPadding(40,0,0,0);
-
-            subtitleText.setGravity(Gravity.RIGHT);
-            subtitleText.setPadding(40,0,0,0);
-
+            messageLayout.setGravity(Gravity.RIGHT);
+            messageLayout.setPadding(40, 5, 10, 5);
         }
 
         return rowView;
