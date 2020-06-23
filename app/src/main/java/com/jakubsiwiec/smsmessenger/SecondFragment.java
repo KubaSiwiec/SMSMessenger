@@ -49,7 +49,8 @@ public class SecondFragment extends Fragment {
     private int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
 
 
-    private void populateListView(String contactPhone){
+
+    public void populateListView(String contactPhone){
 
         /*
         In this function messages list view will be populated
@@ -178,8 +179,8 @@ public class SecondFragment extends Fragment {
                  */
 
                 phoneNumber = editTextPhoneNumberMsg.getText().toString();
-                if (!phoneNumber.matches("")){
-                    message = editTextMessage.getText().toString();
+                message = editTextMessage.getText().toString();
+                if (!phoneNumber.matches("") && !message.matches("")){
 
                     // Request permissions if they are not granted
                     if (ContextCompat.checkSelfPermission(getContext(),
@@ -204,7 +205,7 @@ public class SecondFragment extends Fragment {
                     }
                 }
                 else {
-                    Toast.makeText(getContext(), "Enter phone number before sending the message", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Enter phone number and message before sending the message", Toast.LENGTH_LONG).show();
                 }
             }
         });

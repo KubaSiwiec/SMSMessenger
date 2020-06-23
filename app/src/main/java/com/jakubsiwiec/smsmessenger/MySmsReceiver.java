@@ -15,14 +15,22 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class MySmsReceiver extends BroadcastReceiver {
 
@@ -47,6 +55,9 @@ public class MySmsReceiver extends BroadcastReceiver {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         boolean insertData = dataBaseHelper.addMessage(phoneSender, content, timestamp, false);
     }
+
+
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -111,8 +122,6 @@ public class MySmsReceiver extends BroadcastReceiver {
 
 // notificationId is a unique int for each notification that you must define
                 notificationManager.notify(1, builder.build());
-
-
 
 
 
