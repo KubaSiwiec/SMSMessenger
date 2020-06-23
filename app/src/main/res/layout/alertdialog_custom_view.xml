@@ -14,15 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name."
-        android:textSize="15dp"
-        />
+        android:textSize="15dp" />
+
     <EditText
         android:id="@+id/editTextPhoneContact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Phone number."
-        android:textSize="15dp"
-        android:inputType="phone"
         android:layout_below="@+id/editTextNameContact"
-        />
+        android:hint="Phone number with country code."
+        android:inputType="phone"
+        android:textSize="15dp" />
 </RelativeLayout>

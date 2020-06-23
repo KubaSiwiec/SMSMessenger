@@ -35,6 +35,8 @@ public class FirstFragment extends Fragment {
         ArrayList<String> maintitle = new ArrayList<>();
         ArrayList<String>  subtitle = new ArrayList<>();
         ArrayList<Integer>  imgid= new ArrayList<>();
+        String title;
+        String messageToShow;
         int i = 1;
         while(data.moveToNext()){
 
@@ -42,11 +44,29 @@ public class FirstFragment extends Fragment {
 //            String contactName = data.getString(1);
             String contactPhone = data.getString(1);    // Placeholder it is
             String lastMessage = data.getString(2);
-            boolean sent = data.getInt(3) > 0;
-            String dateTime = data.getString(4);
 
-            maintitle.add(contactPhone);
-            subtitle.add(lastMessage + "\nSent: " + sent + "\nDateTime: " + dateTime);
+            String name = dataBaseHelper.getNameIfNumberExists(contactPhone);
+            if (name != "") {title = contactPhone + " (" + name + ")";} else {title = contactPhone;}
+
+            // Show if message was sent or received
+            if (data.getInt(3) > 0){
+                title = "To: " + title;
+            }
+            else{
+                title = "From: " + title;
+            }
+
+            // If message is to long, trim it to fit in one line
+            if (lastMessage.length() < 35){
+                messageToShow = lastMessage;
+            }
+            else{
+                messageToShow = lastMessage.substring(0, 35) + "...";
+            }
+//            String dateTime = data.getString(4);
+
+            maintitle.add(title);
+            subtitle.add(messageToShow);
             imgid.add(R.drawable.ic_baseline_account_circle_24);
 
             Log.d(TAG, data.getString(1));
@@ -167,14 +187,18 @@ public class FirstFragment extends Fragment {
             }
         });
 
+
         view.findViewById(R.id.button_add_contact).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
+                Show the alert dialod which makes user able to add contact
+                 */
                 AlertDialog deleteDialog = addContactDialog();
                 deleteDialog.show();
-
-
             }
         });
+
+
     }
 }

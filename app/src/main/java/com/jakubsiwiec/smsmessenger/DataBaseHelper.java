@@ -92,6 +92,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    // Get name if contact exists, to populate list view with the contact name
+    // Instead of it's phone number
+    public String getNameIfNumberExists(String phoneNumber){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT " + KEY_NAME + " FROM " + TABLE_CONTACTS + " WHERE " + KEY_PHONE_NUMBER + " ='" + phoneNumber + "';";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return "";
+        }
+        else {
+            cursor.moveToNext();
+            String name = cursor.getString(0);
+            cursor.close();
+            return name;
+        }
+    }
+
 
     // Add methods
     public boolean addContact(String name, String phone){
@@ -192,6 +210,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void DROOOOOP_THE_BEAT(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE " + TABLE_MESSAGES);
+        db.execSQL("DROP TABLE " + TABLE_CONTACTS);
     }
 
 

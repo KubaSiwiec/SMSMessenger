@@ -34,7 +34,7 @@
             android:layout_width="324dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Phone number"
+            android:hint="Phone number with country code"
             android:inputType="phone" />
 
         <ImageButton
