@@ -182,6 +182,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public Cursor getContactMessages(String phoneNumber){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_MESSAGES +
+                " WHERE " + KEY_PHONE_NUMBER + " = '" + phoneNumber +
+                "' ORDER BY " + KEY_ID_MESSAGE + ";";
+        Cursor data = db.rawQuery(query, null);
+        return data;
+    }
+
+
+
+
+
     // Edit methods
     public void EditContact(String contactName, String newName, String newPhone){
         SQLiteDatabase db = this.getWritableDatabase();

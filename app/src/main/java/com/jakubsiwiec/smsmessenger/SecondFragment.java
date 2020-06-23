@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -15,9 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -32,6 +35,8 @@ public class SecondFragment extends Fragment {
 
     private DataBaseHelper dataBaseHelper;
 
+    private ListView listViewMessages;
+
     // Edit text fields
     private EditText editTextMessage;
     private EditText editTextPhoneNumberMsg;
@@ -43,6 +48,64 @@ public class SecondFragment extends Fragment {
     private int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
 
 
+    private void populateListView(String contactPhone){
+
+        /*
+        In this function messages list view will be populated
+        using two text views: title - in which it will be shown if message was sent or received
+        and subtitle, which is messages' content
+        messages will be shown in order from the oldest at the bottom
+         */
+        Log.d(TAG, "Populate list view: displaying data in the ListView");
+        Cursor data = dataBaseHelper.getContactMessages(phoneNumber);
+        ArrayList<String> maintitle = new ArrayList<>();
+        ArrayList<String>  subtitle = new ArrayList<>();
+        String title;
+        String messageToShow;
+        int i = 1;
+        while(data.moveToNext()){
+
+            // Get name and phone number
+            String contactName = data.getString(1); //Maybe show it later somewhere
+            String lastMessage = data.getString(2);
+            String dateTime = data.getString(4);
+
+            String name = dataBaseHelper.getNameIfNumberExists(contactPhone);
+
+            // Show if message was sent or received
+            if (data.getInt(3) > 0){
+                title = "Sent: ";
+            }
+            else{
+                title = "Received: ";
+            }
+
+            title = title + dateTime;
+
+            // If message is to long, trim it to fit in one line
+            if (lastMessage.length() < 35){
+                messageToShow = lastMessage;
+            }
+            else{
+                messageToShow = lastMessage.substring(0, 35) + "...";
+            }
+
+
+            maintitle.add(title);
+            subtitle.add(messageToShow);
+
+            Log.d(TAG, data.getString(1));
+            i++;
+        }
+
+        Log.d(TAG, String.valueOf(data.getCount()));
+
+        CustomMessagesListAdapter adapter = new CustomMessagesListAdapter(getContext(), maintitle, subtitle);
+        listViewMessages.setAdapter(adapter);
+
+    }
+
+
     //database insertion
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addSentMessage(String phoneReceiver, String content){
@@ -51,7 +114,7 @@ public class SecondFragment extends Fragment {
          */
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Toast.makeText(getContext(), "\nsent from: " + phoneReceiver + "\nContent: " + content, Toast.LENGTH_LONG).show();
-        boolean insertData = dataBaseHelper.addMessage(phoneReceiver, content, timestamp, true);
+        boolean insertData = dataBaseHelper.addMessage(phoneReceiver, content, timestamp, true); // use bool later if necessary
     }
 
 
@@ -85,6 +148,9 @@ public class SecondFragment extends Fragment {
         editTextPhoneNumberMsg.setText(phoneNumber);
 
         editTextMessage = (EditText) view.findViewById(R.id.editTextMessage);
+
+        listViewMessages = (ListView) view.findViewById(R.id.listViewMessages);
+        populateListView(phoneNumber);
 
 
         view.findViewById(R.id.buttonSend).setOnClickListener(new View.OnClickListener() {

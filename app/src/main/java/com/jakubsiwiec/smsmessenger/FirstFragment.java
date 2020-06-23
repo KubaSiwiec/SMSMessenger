@@ -76,7 +76,7 @@ public class FirstFragment extends Fragment {
 
         Log.d(TAG, String.valueOf(data.getCount()));
 
-        CustomContactListAdapter adapter=new CustomContactListAdapter(getContext(), maintitle, subtitle,imgid);
+        CustomContactListAdapter adapter = new CustomContactListAdapter(getContext(), maintitle, subtitle,imgid);
         listViewChats.setAdapter(adapter);
 
     }
