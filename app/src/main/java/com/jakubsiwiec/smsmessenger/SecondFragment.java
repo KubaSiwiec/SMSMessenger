@@ -110,14 +110,16 @@ public class SecondFragment extends Fragment {
                                 new String[]{Manifest.permission.SEND_SMS},
                                 MY_PERMISSIONS_REQUEST_SEND_SMS);
                     }
+                    else {
 
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(phoneNumber, null, message, ((MainActivity) getActivity()).sentPI, ((MainActivity) getActivity()).deliveredPI);
+                        SmsManager smsManager = SmsManager.getDefault();
+                        smsManager.sendTextMessage(phoneNumber, null, message, ((MainActivity) getActivity()).sentPI, ((MainActivity) getActivity()).deliveredPI);
 
-                    addSentMessage(phoneNumber, message);
+                        addSentMessage(phoneNumber, message);
 
-                    Log.i(TAG, "Phone number: " + phoneNumber + "\nMessage: " + message);
-                    editTextMessage.getText().clear();
+                        Log.i(TAG, "Phone number: " + phoneNumber + "\nMessage: " + message);
+                        editTextMessage.getText().clear();
+                    }
                 }
                 else {
                     Toast.makeText(getContext(), "Enter phone number before sending the message", Toast.LENGTH_LONG).show();
