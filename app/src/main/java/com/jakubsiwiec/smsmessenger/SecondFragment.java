@@ -64,13 +64,12 @@ public class SecondFragment extends Fragment {
         ArrayList<String>  subtitle = new ArrayList<>();
         ArrayList<Integer>  isSent = new ArrayList<>();
         String title;
-        String messageToShow;
         int i = 1;
         while(data.moveToNext()){
 
             // Get name and phone number
             String contactName = data.getString(1); //Maybe show it later somewhere
-            String lastMessage = data.getString(2);
+            String message = data.getString(2);
             String dateTime = data.getString(4);
 
             String name = dataBaseHelper.getNameIfNumberExists(contactPhone);
@@ -87,17 +86,9 @@ public class SecondFragment extends Fragment {
 
             title = title + dateTime;
 
-            // If message is to long, trim it to fit in one line
-            if (lastMessage.length() < 35){
-                messageToShow = lastMessage;
-            }
-            else{
-                messageToShow = lastMessage.substring(0, 35) + "...";
-            }
-
 
             maintitle.add(title);
-            subtitle.add(messageToShow);
+            subtitle.add(message);
 
             Log.d(TAG, data.getString(1));
             i++;
