@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -199,6 +200,42 @@ public class FirstFragment extends Fragment {
             }
         });
 
+
+        listViewChats.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+
+                Object o = listViewChats.getItemAtPosition(position);
+
+                String title = o.toString();
+
+                // Retrieve the phone number from title
+                int lastDigitIndex;
+                int firstDigitIndex = title.indexOf(":") + 2;
+                if (title.indexOf("(") == -1){
+                    lastDigitIndex = title.lastIndexOf(title);
+                }
+                else{
+                    lastDigitIndex = title.indexOf("(") - 1;
+                }
+                String contactPhoneNumber = title.substring(firstDigitIndex, lastDigitIndex);
+
+                Bundle bundle = new Bundle();
+
+                bundle.putString("contactPhoneNumber", contactPhoneNumber);
+
+                Toast.makeText(getContext(), contactPhoneNumber, Toast.LENGTH_LONG).show();
+
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_SecondFragment, bundle);
+
+
+
+                Log.i(TAG, "Item of position " + position + " clicked");
+
+            }
+        });
 
     }
 }
